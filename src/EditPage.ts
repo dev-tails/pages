@@ -29,6 +29,8 @@ export const EditPage = () => {
   title.contentEditable = "true";
   setStyle(title, {
     outline: "none",
+    fontWeight: "bold",
+    fontSize: "1.2em"
   });
 
   title.addEventListener("blur", () => {
@@ -58,6 +60,17 @@ export const EditPage = () => {
   body.contentEditable = "true";
   setStyle(body, {
     outline: "none",
+    whiteSpace: "pre"
+  });
+
+  body.addEventListener("blur", () => {
+    const newContentText = body.innerText;
+    if (newContentText !== state.block?.content) {
+      updateBlock({
+        ...state.block,
+        content: newContentText
+      })
+    }
   });
 
   function setBlock(block: Block) {
