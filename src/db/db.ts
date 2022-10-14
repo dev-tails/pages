@@ -1,15 +1,17 @@
 import { DBSchema, IDBPDatabase, openDB } from 'idb';
 import { v4 as uuidv4 } from 'uuid';
 
-export type Note = {
+export type Block = {
   localId?: string;
   body?: string;
+  content?: string;
   createdAt?: Date;
+  type?: "page";
 };
 
 interface EngramDB extends DBSchema {
-  notes: {
-    value: Note;
+  blocks: {
+    value: Block;
     key: string;
   };
 }
@@ -21,10 +23,10 @@ export function getDb() {
     return _db;
   }
 
-  _db = openDB<EngramDB>("engram-db", 1, {
+  _db = openDB<EngramDB>("engram-pages-db", 1, {
     upgrade(db, oldVersion, newVersion) {
       if (oldVersion < 1) {
-        const notesStore = db.createObjectStore("notes", {
+        const blocksStore = db.createObjectStore("blocks", {
           keyPath: "localId",
         });
       }
@@ -34,17 +36,17 @@ export function getDb() {
   return _db;
 }
 
-export async function addNote(value: EngramDB["notes"]["value"]) {
+export async function addBlock(value: EngramDB["blocks"]["value"]) {
   const db = await getDb();
 
   const localId = uuidv4();
   const date = new Date();
-  const addedNote = { ...value, localId, createdAt: date };
-  await db.add("notes", addedNote);
-  return addedNote;
+  const addedBlock = { ...value, localId, createdAt: date };
+  await db.add("blocks", addedBlock);
+  return addedBlock;
 }
 
-export async function getAllNotes() {
+export async function getAllBlocks() {
   const db = await getDb();
-  return db.getAll("notes");
+  return db.getAll("blocks");
 }
