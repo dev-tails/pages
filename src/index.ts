@@ -23,7 +23,7 @@ async function init() {
 
   root.append(
     await Sidebar({
-      onCreatePage(block) {
+      onPageSelected(block) {
         editPage.setBlock(block);
       },
     })

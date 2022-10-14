@@ -4,10 +4,10 @@ import { Div } from "./Div";
 import { setStyle } from "./setStyle";
 
 type SidebarProps = {
-  onCreatePage: (block: Block) => void;
-}
+  onPageSelected: (block: Block) => void;
+};
 
-export const Sidebar = async ({ onCreatePage }: SidebarProps) => {
+export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
   const blocks = await getAllBlocks();
 
   const el = Div();
@@ -15,40 +15,42 @@ export const Sidebar = async ({ onCreatePage }: SidebarProps) => {
     maxWidth: "200px",
     width: "30%",
     borderRight: "1px solid black",
-    padding: "8px"
+    padding: "8px",
   });
 
   const nav = Div();
   setStyle(nav, {
     display: "flex",
     justifyContent: "space-between",
-    borderBottom: "1px solid black"
-  })
+    borderBottom: "1px solid black",
+  });
   el.append(nav);
 
   const btnHideSidebar = Button({
     text: "x",
-    onClick() {
-
-    }
+    onClick() {},
   });
-  nav.append(btnHideSidebar)
+  nav.append(btnHideSidebar);
 
   const btnAddPage = Button({
     text: "+",
     async onClick() {
       const newBlock = await addBlock({ body: "New Page" });
-      onCreatePage(newBlock);
-    }
+      onPageSelected(newBlock);
+    },
   });
   nav.append(btnAddPage);
 
   for (const block of blocks) {
-    el.append(SidebarItem({ block }))
+    const sidebarItem = SidebarItem({ block });
+
+    sidebarItem.addEventListener("click", onPageSelected.bind(this, block));
+
+    el.append(sidebarItem);
   }
 
   return el;
-}
+};
 
 function SidebarItem({ block }: { block: Block }) {
   const el = Div();

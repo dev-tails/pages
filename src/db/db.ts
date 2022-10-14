@@ -46,6 +46,15 @@ export async function addBlock(value: EngramDB["blocks"]["value"]) {
   return addedBlock;
 }
 
+export async function removeBlock(id?: string) {
+  if (!id) {
+    return;
+  }
+
+  const db = await getDb();
+  await db.delete("blocks", id);
+}
+
 export async function getAllBlocks() {
   const db = await getDb();
   return db.getAll("blocks");
