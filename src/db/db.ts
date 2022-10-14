@@ -1,13 +1,14 @@
 import { DBSchema, IDBPDatabase, openDB } from 'idb';
 import { v4 as uuidv4 } from 'uuid';
+import { Signal } from '../Signal';
 
-export type Block = {
-  localId?: string;
-  body?: string;
-  content?: string;
-  createdAt?: Date;
+export type Block = Partial<{
+  localId: string;
+  body: string;
+  content: string;
+  createdAt: Date;
   type?: "page";
-};
+}>;
 
 interface EngramDB extends DBSchema {
   blocks: {
@@ -46,6 +47,7 @@ export async function addBlock(value: EngramDB["blocks"]["value"]) {
   return addedBlock;
 }
 
+const blockRemovedSignal = new Signal<string>();
 export async function removeBlock(id?: string) {
   if (!id) {
     return;
@@ -53,6 +55,11 @@ export async function removeBlock(id?: string) {
 
   const db = await getDb();
   await db.delete("blocks", id);
+  blockRemovedSignal.dispatch(id)
+}
+
+export function onBlockRemoved(listener: (string) => void) {
+  blockRemovedSignal.add(listener);
 }
 
 export async function getAllBlocks() {

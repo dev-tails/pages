@@ -1,5 +1,5 @@
 import { Button } from "./Button";
-import { addBlock, Block, getAllBlocks } from "./db/db";
+import { addBlock, Block, getAllBlocks, onBlockRemoved } from "./db/db";
 import { Div } from "./Div";
 import { setStyle } from "./setStyle";
 
@@ -41,13 +41,26 @@ export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
   });
   nav.append(btnAddPage);
 
+  const sidebarItems: HTMLDivElement[] = [];
   for (const block of blocks) {
     const sidebarItem = SidebarItem({ block });
+    sidebarItems.push(sidebarItem);
 
     sidebarItem.addEventListener("click", onPageSelected.bind(this, block));
 
     el.append(sidebarItem);
   }
+
+  onBlockRemoved((id) => {
+    const blockIndex = blocks.findIndex((b) => {
+      return b.localId === id;
+    });
+    if (blockIndex >= 0) {
+      blocks.splice(blockIndex, 1);
+      sidebarItems[blockIndex].remove();
+      sidebarItems.splice(blockIndex, 1);
+    }
+  });
 
   return el;
 };
