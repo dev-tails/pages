@@ -47,6 +47,7 @@ export const EditPage = () => {
     text: "x",
     onClick() {
       removeBlock(state.block?.localId);
+      setBlock(null);
     },
   });
   setStyle(btnDelete, {
@@ -73,11 +74,11 @@ export const EditPage = () => {
     }
   });
 
-  function setBlock(block: Block) {
+  function setBlock(block: Block | null) {
     state.block = block;
 
-    title.innerText = block.body || "";
-    body.innerHTML = block.content || "";
+    title.innerText = block?.body || "";
+    body.innerHTML = block?.content || "";
 
     setStyle(btnDelete, {
       visibility: ""
