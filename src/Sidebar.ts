@@ -27,7 +27,7 @@ export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
   el.append(nav);
 
   const btnHideSidebar = Button({
-    text: "x",
+    text: "",
     onClick() {},
   });
   nav.append(btnHideSidebar);
@@ -36,6 +36,8 @@ export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
     text: "+",
     async onClick() {
       const newBlock = await addBlock({ body: "New Page" });
+      blocks.push(newBlock);
+      addSidebarItem(newBlock);
       onPageSelected(newBlock);
     },
   });
@@ -45,13 +47,18 @@ export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
     el:HTMLDivElement,
     setBlock: (block: Block) => void;
   }> = [];
-  for (const block of blocks) {
+
+  function addSidebarItem(block: Block) {
     const sidebarItem = SidebarItem({ block });
     sidebarItems.push(sidebarItem);
 
     sidebarItem.el.addEventListener("click", onPageSelected.bind(this, block));
 
     el.append(sidebarItem.el);
+  }
+
+  for (const block of blocks) {
+    addSidebarItem(block);
   }
 
   onBlockUpdated((updatedBlock: Block) => {
