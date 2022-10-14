@@ -10,7 +10,9 @@ self.addEventListener('install', function (event) {
         '/apple-touch-icon.png',
         '/favicon-32x32.png',
         '/favicon-16x16.png',
-        '/safari-pinned-tab.svg'
+        '/safari-pinned-tab.svg',
+        '/android-chrome-192x192.png',
+        '/android-chrome-512x512.png'
       ]);
     }),
   );
