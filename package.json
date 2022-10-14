@@ -1,0 +1,19 @@
+{
+  "name": "@engramhq/pages",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --minify --outfile=static/js/pages.js",
+    "build:w": "npm run build -- --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.15.10"
+  },
+  "dependencies": {
+    "idb": "^7.1.0",
+    "uuid": "^9.0.0"
+  }
+}
