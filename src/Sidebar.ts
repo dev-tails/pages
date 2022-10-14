@@ -1,5 +1,5 @@
 import { Button } from "./Button";
-import { addBlock, Block, getAllBlocks, onBlockRemoved } from "./db/db";
+import { addBlock, Block, getAllBlocks, onBlockRemoved, onBlockUpdated } from "./db/db";
 import { Div } from "./Div";
 import { setStyle } from "./setStyle";
 
@@ -41,15 +41,28 @@ export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
   });
   nav.append(btnAddPage);
 
-  const sidebarItems: HTMLDivElement[] = [];
+  const sidebarItems: Array<{
+    el:HTMLDivElement,
+    setBlock: (block: Block) => void;
+  }> = [];
   for (const block of blocks) {
     const sidebarItem = SidebarItem({ block });
     sidebarItems.push(sidebarItem);
 
-    sidebarItem.addEventListener("click", onPageSelected.bind(this, block));
+    sidebarItem.el.addEventListener("click", onPageSelected.bind(this, block));
 
-    el.append(sidebarItem);
+    el.append(sidebarItem.el);
   }
+
+  onBlockUpdated((updatedBlock: Block) => {
+    const blockIndex = blocks.findIndex((b) => {
+      return b.localId === updatedBlock.localId;
+    });
+    if (blockIndex >= 0) {
+      blocks[blockIndex] = updatedBlock;
+      sidebarItems[blockIndex].setBlock(updatedBlock);
+    }
+  })
 
   onBlockRemoved((id) => {
     const blockIndex = blocks.findIndex((b) => {
@@ -57,7 +70,7 @@ export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
     });
     if (blockIndex >= 0) {
       blocks.splice(blockIndex, 1);
-      sidebarItems[blockIndex].remove();
+      sidebarItems[blockIndex].el.remove();
       sidebarItems.splice(blockIndex, 1);
     }
   });
@@ -65,10 +78,17 @@ export const Sidebar = async ({ onPageSelected }: SidebarProps) => {
   return el;
 };
 
-function SidebarItem({ block }: { block: Block }) {
+function SidebarItem(props: { block: Block }) {
   const el = Div();
 
-  el.innerText = block.body || "";
+  function setBlock(block) {
+    el.innerText = block.body || "";
+  }
 
-  return el;
+  setBlock(props.block);
+
+  return {
+    el,
+    setBlock
+  }
 }

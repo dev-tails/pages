@@ -1,5 +1,5 @@
 import { Button } from "./Button";
-import { Block, removeBlock } from "./db/db";
+import { Block, removeBlock, updateBlock } from "./db/db";
 import { Div } from "./Div";
 import { setStyle } from "./setStyle";
 
@@ -31,7 +31,15 @@ export const EditPage = () => {
     outline: "none",
   });
 
-  title.addEventListener("blur", () => {});
+  title.addEventListener("blur", () => {
+    const newTitleText = title.innerText;
+    if (newTitleText !== state.block?.body) {
+      updateBlock({
+        ...state.block,
+        body: newTitleText
+      })
+    }
+  });
 
   const btnDelete = Button({
     text: "x",

@@ -47,6 +47,17 @@ export async function addBlock(value: EngramDB["blocks"]["value"]) {
   return addedBlock;
 }
 
+const blockUpdatedSignal = new Signal<Block>();
+export async function updateBlock(value: EngramDB["blocks"]["value"]) {
+  const db = await getDb();
+  await db.put("blocks", value);
+  blockUpdatedSignal.dispatch(value);
+}
+
+export function onBlockUpdated(listener: (newBlock: Block) => void) {
+  blockUpdatedSignal.add(listener);
+}
+
 const blockRemovedSignal = new Signal<string>();
 export async function removeBlock(id?: string) {
   if (!id) {
