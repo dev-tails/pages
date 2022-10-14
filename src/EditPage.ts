@@ -31,6 +31,7 @@ export const EditPage = () => {
     outline: "none",
     fontWeight: "bold",
     fontSize: "1.2em",
+    whiteSpace: "pre-wrap",
   });
 
   title.addEventListener("blur", async () => {
@@ -64,7 +65,7 @@ export const EditPage = () => {
   body.contentEditable = "true";
   setStyle(body, {
     outline: "none",
-    whiteSpace: "pre",
+    whiteSpace: "pre-wrap",
   });
 
   body.addEventListener("blur", async () => {
