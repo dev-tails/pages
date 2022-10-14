@@ -1,4 +1,4 @@
-import { addBlock, getAllBlocks, Block } from "./db/db";
+import { addBlock, getAllBlocks, Block, getBlock } from "./db/db";
 import { Div } from "./Div";
 import { EditPage } from "./EditPage";
 import { setStyle } from "./setStyle";
@@ -23,8 +23,11 @@ async function init() {
 
   root.append(
     await Sidebar({
-      onPageSelected(block) {
-        editPage.setBlock(block);
+      async onPageSelected(block: Block) {
+        const dbBlock = await getBlock(block.localId);
+        if (dbBlock) {
+          editPage.setBlock(dbBlock);
+        }
       },
     })
   );

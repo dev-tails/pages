@@ -73,6 +73,15 @@ export function onBlockRemoved(listener: (string) => void) {
   blockRemovedSignal.add(listener);
 }
 
+export async function getBlock(id?: string) {
+  if (!id) {
+    return;
+  }
+  
+  const db = await getDb();
+  return db.get("blocks", id);
+}
+
 export async function getAllBlocks() {
   const db = await getDb();
   return db.getAll("blocks");

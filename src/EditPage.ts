@@ -15,13 +15,13 @@ export const EditPage = () => {
   const el = Div();
   setStyle(el, {
     padding: "8px",
-    width: "100%"
+    width: "100%",
   });
 
   const topContent = Div();
   setStyle(topContent, {
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   });
   el.append(topContent);
 
@@ -30,16 +30,19 @@ export const EditPage = () => {
   setStyle(title, {
     outline: "none",
     fontWeight: "bold",
-    fontSize: "1.2em"
+    fontSize: "1.2em",
   });
 
-  title.addEventListener("blur", () => {
+  title.addEventListener("blur", async () => {
     const newTitleText = title.innerText;
     if (newTitleText !== state.block?.body) {
-      updateBlock({
+      const newBlock = {
         ...state.block,
-        body: newTitleText
-      })
+        body: newTitleText,
+      };
+      updateBlock(newBlock);
+      await updateBlock(newBlock);
+      state.block = newBlock;
     }
   });
 
@@ -51,8 +54,8 @@ export const EditPage = () => {
     },
   });
   setStyle(btnDelete, {
-    visibility: "hidden"
-  })
+    visibility: "hidden",
+  });
 
   topContent.append(title);
   topContent.append(btnDelete);
@@ -61,16 +64,18 @@ export const EditPage = () => {
   body.contentEditable = "true";
   setStyle(body, {
     outline: "none",
-    whiteSpace: "pre"
+    whiteSpace: "pre",
   });
 
-  body.addEventListener("blur", () => {
+  body.addEventListener("blur", async () => {
     const newContentText = body.innerText;
     if (newContentText !== state.block?.content) {
-      updateBlock({
+      const newBlock = {
         ...state.block,
-        content: newContentText
-      })
+        content: newContentText,
+      };
+      await updateBlock(newBlock);
+      state.block = newBlock;
     }
   });
 
@@ -81,8 +86,8 @@ export const EditPage = () => {
     body.innerHTML = block?.content || "";
 
     setStyle(btnDelete, {
-      visibility: ""
-    })
+      visibility: "",
+    });
   }
 
   el.append(body);
